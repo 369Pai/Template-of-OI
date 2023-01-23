@@ -19,7 +19,7 @@ int main()
 		scanf("%lf" , &a[i]);
 	while(fabs(l - r) > eps)
 	{
-		double lmid = (l + r) / 2 , rmid = (lmid + r) / 2;
+		double lmid = l + (r - l) * 0.5 , rmid = l + (r - l) * 0.51;
 		if(F(lmid) < F(rmid))l = lmid;
 		else r = rmid;
 	}
