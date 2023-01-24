@@ -20,6 +20,11 @@ double Angle(Vector a , Vector b){return acos(Dot(a , b) / Length(a) / Length(b)
 double Cross(Vector a , Vector b){return a.x * b.y - a.y * b.x;}
 double S(Point A , Point B , Point C){return Cross(B - A, C - A);}
 Vector Rotate(Vector a , double rad){return Vector(a.x * cos(rad) - a.y * sin(rad) , a.y * cos(rad) + a.x * sin(rad));}
+Vector Rotate2(Vector a , double rad)
+{
+	double ang = atan2(a.y , a.x) , len = Length(a);
+	return Vector(cos(rad + ang) * len , sin(rad + ang) * len);
+}
 Vector Normal(Vector a){double L = Length(a); return Vector(-a.y/L,a.x/L);}
 Point GetLineIntersection(Point P , Vector v , Point Q , Vector w)
 {
@@ -59,11 +64,11 @@ bool SegmentIntersection(Point A1 , Point A2 , Point B1 , Point B2)
 {
 	return SegmentProperIntersection(A1 , A2 , B1 , B2) || OnSegment(B1 , A1 , A2) || OnSegment(B2 , A1 , A2) || OnSegment(A1 , B1 , B2) || OnSegment(A2 , B1 , B2); 
 }
-double PolygonArea(Point *P , int n)
+double PolygonArea(Point P[] , int n)
 {
 	double area = 0;
-	for(int i = 2 ; i < n ; i++)
-		area += Cross(P[i] - P[1] , P[i + 1] - P[1]);
+	for(int i = 1 ; i <= n ; i++)
+		area += Cross(P[i] - P[0] , P[i % n + 1] - P[0]);
 	return area / 2;
 }
 struct Circle
@@ -90,7 +95,7 @@ int GetLineCircleIntersection(Line L, Circle C , vector<Point>& sol)
 	return 2;
 }
 double Angle(Vector v){return atan2(v.y , v.x);}
-int GetCircliIntersection(Circle C1 , Circle C2 , vector<Point>&sol)
+int GetCircleIntersection(Circle C1 , Circle C2 , vector<Point>&sol)
 {
 	double d = Length(C1.c - C2.c);
 	if(Dcmp(d) == 0)
@@ -129,7 +134,42 @@ int GetTangents(Circle A, Circle B, Point* a , Point* b)
 	}
 	return cnt;
 }
+bool IsPointOnSegment(Point P , Point A , Point B){return OnSegment(P , A , B) || P == A || P == B;}
+int IsPointInPolygon(Point P , Point poly[] , int n)
+{
+	int wn = 0;
+	for(int i = 1 ; i <= n ; i++)
+	{
+		if(IsPointOnSegment(P , poly[i] , poly[i % n + 1]))return -1;
+		int k = Dcmp(Cross(poly[i % n + 1] - poly[i] , P - poly[i]));
+		int d1 = Dcmp(poly[i].y - P.y);
+		int d2 = Dcmp(poly[i % n + 1].y - P.y);
+		if(k > 0 && d1 <= 0 && d2 > 0)wn++;//notice =
+		if(k < 0 && d2 <= 0 && d1 > 0)wn--;//notice =
+	}
+	if(wn != 0)return 1;
+	return 0;
+}
+int ConvexHull(Point p[] , int n , Point ch[])
+{
+	sort(p + 1 , p + n + 1);
+	int top = 0;
+	for(int i = 1 ; i <= n ; i++)
+	{
+		while(top > 1 && Dcmp(Cross(ch[top] - ch[top - 1] , p[i] - ch[top - 1])) <= 0)top--;
+		ch[++top] = p[i];
+	}
+	int k = top;
+	for(int i = n - 1 ; i >= 1 ; i--)
+	{
+		while(top > k && Dcmp(Cross(ch[top] - ch[top - 1] , p[i] - ch[top - 1])) <= 0)top--;
+		ch[++top] = p[i];
+	}
+	if(n > 1)top--;
+	return top;
+}
 int main()
 {
+	 
 	return 0;
 }
