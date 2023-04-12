@@ -7,15 +7,16 @@ void MakeData(int cs)
 {
 	//use fprintf(fout , "" , ...);
 	//or use fout << 
+	fprintf(fout , "%d\n" , cs);
 	fflush(fout);
 	//fout << flush;
 }
 int main()
 {
-	//only on Linux
+	//only on Windows
 	srand(time(NULL));
 	int tp = 0;
-	string name = "";
+	string name = "a";
 	cout << "input op:";
 	cin >> tp;
 	if(tp == 1)
@@ -25,9 +26,9 @@ int main()
 			string str = name + to_string(cs);
 			fout = fopen((str + ".in").c_str(),"w");
 			//fout.open((str + ".in").c_str());
-			MakeData(cs);
+			MakeData(cs); fclose(fout);
 			//fout.close();
-			string op = "cat ./" + (str + ".in") + " | ./std > ./" + (str + ".out");
+			string op = "std.exe<" + (str + ".in") + ">" + (str + ".out");
 			printf("%s\n" , op.c_str());
 			system(op.c_str());
 		}		
@@ -37,16 +38,16 @@ int main()
 		for(int cs = 1 ; cs <= 10 ; cs++)
 		{
 			string str = name + to_string(cs);
-			string op1 = "cat ./" + (str + ".in") + " | ./std > ./" + "std.out";
+			string op1 = "std.exe<" + (str + ".in") + ">" + "std.out";
 			printf("%s\n" , op1.c_str());	
 			auto t_1 = chrono::high_resolution_clock::now();
 			system(op1.c_str());
 			auto t_2 = chrono::high_resolution_clock::now();
-			string op2 = "cat ./" + (str + ".in") + " | ./test > ./" + "test.out";
+			string op2 = "test.exe<" + (str + ".in") + ">" + "test.out";
 			printf("%s\n" , op2.c_str());
 			system(op2.c_str());
 			auto t_3 = chrono::high_resolution_clock::now();
-			if (system("diff std.out test.out"))
+			if (system("fc std.out test.out"))
 			{
 				printf("Wrong Answer\n");
 				return 0;

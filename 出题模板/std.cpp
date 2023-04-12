@@ -2,6 +2,8 @@
 using namespace std;
 int main()
 {
-	//use stdin and stdout
+	int a;
+	cin >> a;
+	cout << a;
 	return 0;
 }
