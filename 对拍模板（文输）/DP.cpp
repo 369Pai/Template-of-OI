@@ -9,11 +9,11 @@ int main()
     for (i=1;; i++)
     {
         printf("The result of No. %d Case is:  ",i);
-        system("./rand > in.txt");
+        system("./rand");
 		auto t1 = chrono::steady_clock::now();
-        system("cat in.txt | ./std > std.out");
+        system("./std");
 		auto t2 = chrono::steady_clock::now();
-        system("cat in.txt | ./test > test.out");
+        system("./test");
 		auto t3 = chrono::steady_clock::now();
         if (system("diff -w std.out test.out"))
         {
