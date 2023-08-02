@@ -1,8 +1,8 @@
 #include "bits/stdc++.h"
 using namespace std;
-mt19937_64 rnd(time(NULL));
-ofstream fout;
-ll Random(ll l , ll r){return ll(rnd % (r - l + 1)) + l;}
+typedef long long ll;
+mt19937_64 rnd(time(NULL)); ofstream fout;
+ll Random(ll l , ll r){return ll(rnd() % (r - l + 1)) + l;}
 void MakeData(int cs)
 {
 	fout << flush;
