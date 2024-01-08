@@ -1,8 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
+long long c1 , c2;
 struct UBigint : public vector<int>
 {
-	const static int BASE = 1e4 , D = 4;
+	const static int BASE = 1e7 , D = 7;
 	UBigint(){}
 	UBigint(string s) 
 	{
@@ -63,17 +64,20 @@ struct UBigint : public vector<int>
 	}
 	friend UBigint operator * (const UBigint &a , const UBigint &b)
 	{
+		auto t1 = chrono::steady_clock::now();
 		int sa = a.size() , sb = b.size();
 		vector<long long>t(sa + sb);
 		for(int i = 1 ; i < sa ; i++)
 			for(int j = 1 ; j < sb ; j++)
-				t[i + j - 1] += a[i] * b[j];
+				t[i + j - 1] += (long long)a[i] * b[j];//can hold digits = 2^63/((BASE-1)^2)*D
 		for(int i = 1 , en = t.size() ; i + 1 < en ; i++)
 			t[i + 1] += t[i] / BASE , t[i] %= BASE; 
 		UBigint c;
 		c.resize(sa + sb);			
 		for(int i = 1 , en = c.size() ; i < en ; i++)c[i] = (int)t[i];
 		Maintain(c);
+		auto t2 = chrono::steady_clock::now();
+		c2 += (t2 - t1) / 1us;
 		return c;
 	}
 	friend UBigint operator / (const UBigint &a , const int &b)
@@ -95,7 +99,7 @@ struct UBigint : public vector<int>
 	{
 		UBigint c;
 		c.resize(max((int)a.size() - (int)b.size() , 0) + 2);
-		if(!(a <= b))
+		if(!(a < b))
 		{
 			UBigint x; x.resize(1);
 			for(int i = a.size() - 1 , en = c.size() - 1; i > en ; i--)x.insert(x.begin() + 1 , a[i]);
@@ -121,10 +125,13 @@ struct UBigint : public vector<int>
 	friend UBigint operator % (const UBigint &a , const UBigint &b){return a - a / b * b;}
 	inline friend UBigint operator ^ (UBigint x , int p)
 	{
+		auto t1 = chrono::steady_clock::now();
 		UBigint res = 1;
 		for(; p > 0 ; p >>= 1 , x = x * x)
 			if(p & 1)res = res * x;
-		return res;
+		auto t2 = chrono::steady_clock::now();
+		c1 += (t2 - t1) / 1us;
+		return res;	
 	}
 	inline friend UBigint sqrt(const UBigint& n , const int& m)
 	{
@@ -144,21 +151,8 @@ struct UBigint : public vector<int>
 typedef unsigned long long ull;
 int main()
 {
-	string s1 , s2;
-	cin >> s1 >> s2;
-	UBigint a = s1 , b = s2;
-	Print(a + b , '\n');
-	if(a < b)
-	{
-		putchar('-');
-		Print(b - a , '\n');
-	}
-	else Print(a - b , '\n');
-	auto t1 = chrono::steady_clock::now();
-	Print(a * b , '\n');
-	auto t2 = chrono::steady_clock::now();
-	Print(a / b , '\n');
-	auto t3 = chrono::steady_clock::now();
-	Print(a % b , '\n');
+	int m; string s1;
+	cin >> m >> s1;
+	Print(sqrt(UBigint(s1) , m));
 	return 0;
 }
